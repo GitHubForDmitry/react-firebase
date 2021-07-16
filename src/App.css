@@ -20,3 +20,14 @@
 .App-link {
   color: #09d3ac;
 }
+.dish__image {
+  height: 300px;
+  width: 300px;
+  padding: 93px 10px;
+  background-color: #f4f4f4;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
