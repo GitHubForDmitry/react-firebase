@@ -1,6 +1,5 @@
 import React from "react";
 import "./App.css";
-import firebase from "./firebase";
 import {HashRouter} from "react-router-dom";
 import RouterComponent from "./Router";
 
