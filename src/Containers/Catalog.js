@@ -1,12 +1,13 @@
 import React from 'react';
 import CardIHERB from "../Components/Card";
 import firebase from "../firebase";
-import {ButtonGroup, Container, Grid, Link, TextField} from "@material-ui/core";
+import {AppBar, ButtonGroup, Container, Grid, IconButton, Link, TextField, Toolbar} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import CircularIndeterminate from "../Components/CircularIndeterminate";
 const useStyles = makeStyles((theme) => ({
     link: {
-        padding: '5%',
+        padding: '10px 0',
         display: 'block'
     },
     input: {
@@ -30,6 +31,20 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         margin: '0 5px 5px 0'
+    },
+    toolbar: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    wrapper: {
+        width: '100%',
+        margin: 'auto',
+        position: 'relative',
+        maxWidth: '1920px',
+        background: 'rgba(244, 245, 249, 0.7)',
+        minHeight: '100vh',
     }
 }));
 
@@ -41,6 +56,7 @@ const filterButtons = {
     duw: task => task.category.split(', ').map(name => name.trim()).includes('Средства для душа и ухода'),
     products: task => task.category.indexOf('Продукты') !== -1,
 }
+
 function Catalog() {
     const [iherb, setIherb] = React.useState([]);
     const classes = useStyles();
@@ -50,7 +66,8 @@ function Catalog() {
         const fetchData = async () => {
             const db = firebase.firestore();
             const data = await db.collection("iherb").get();
-            setIherb(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+            const getData = data.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+            setIherb(getData);
         };
         fetchData();
     }, []);
@@ -85,42 +102,60 @@ function Catalog() {
         ))
     )
 
+    if (iherb.length === 0) {
+        return (
+                <Container className={classes.root}>
+                    <CircularIndeterminate />
+                </Container>
+                )
+    }
     return (
-        <Container className={classes.root}>
-            <Link className={classes.link} href="/admin" >
-                Админка
-            </Link>
+        <React.Fragment>
+            <AppBar position="static">
+                <Container className={classes.root}>
+                    <Toolbar className={classes.toolbar}>
+                        <Link color="inherit" className={classes.link} href="tel:0665210945" >
+                            <div>+38-066-521-09-45</div>
+                            <div>Анастасия</div>
+                        </Link>
+                        <Link color="inherit" className={classes.link} href="/signin" >
+                            Войти
+                        </Link>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+            <Container className={classes.root}>
+                    <TextField
+                        type="text"
+                        onChange={changeSearch}
+                        id="imageButton"
+                        label="Поиск"
+                        value={search}
+                        className={classes.input}
+                    />
 
-            <TextField
-                type="text"
-                onChange={changeSearch}
-                id="imageButton"
-                label="Поиск"
-                value={search}
-                className={classes.input}
-            />
+                    <div color="primary" className={classes.buttonGroup}>
+                        {filterList}
+                    </div>
 
-            <div color="primary" className={classes.buttonGroup}>
-                {filterList}
-            </div>
+                    <Grid container spacing={3}>
+                        {
+                            iherb
+                                .filter((item) => {
+                                    const buff = [];
 
-            <Grid container spacing={3}>
-                {
-                    iherb
-                        .filter((item) => {
-                            const buff = [];
+                                    if (search.length) {
+                                        buff.push(item.name.toUpperCase().includes(search.toUpperCase()));
+                                    }
 
-                            if (search.length) {
-                                buff.push(item.name.toUpperCase().includes(search.toUpperCase()));
-                            }
-
-                            return buff.every(Boolean);
-                        })
-                        .filter(filterButtons[filter])
-                        .map((item, index) => <CardIHERB item={item} key={index}/>)
-                }
-            </Grid>
-        </Container>
+                                    return buff.every(Boolean);
+                                })
+                                .filter(filterButtons[filter])
+                                .map((item, index) => <CardIHERB item={item} key={index}/>)
+                        }
+                    </Grid>
+                </Container>
+        </React.Fragment>
     );
 }
 

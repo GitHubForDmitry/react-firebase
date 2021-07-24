@@ -90,6 +90,8 @@ export const SpellInput = ({ spell }) => {
             <br/>
             <TextField
                 value={description}
+                multiline
+                rows={4}
                 label="Описание"
                 onChange={e => {
                     setDescription(e.target.value);
