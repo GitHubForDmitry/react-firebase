@@ -3,6 +3,7 @@ import {SpellInput} from "../Components/SpellInput";
 import firebase from "../firebase";
 import {Button, Container, Grid, TextField, Link} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
+import {useHistory} from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
     link: {
         padding: '5%',
@@ -160,8 +161,6 @@ function Admin() {
                             if (search.length) {
                                 buff.push(item.name.toUpperCase().includes(search.toUpperCase()));
                             }
-                            console.log(item.name.toUpperCase(), 'item.name.toUpperCase()')
-                            console.log(search.toUpperCase(), 'isearch')
                             return buff.every(Boolean);
                         })
                         .map((vitamin, index) => (

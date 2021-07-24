@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
         margin: 'auto',
         position: 'relative',
-        maxWidth: '1920px',
         background: 'rgba(244, 245, 249, 0.7)',
         minHeight: '100vh',
     }
