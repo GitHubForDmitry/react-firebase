@@ -1,8 +1,12 @@
 import React from "react";
-import firebase from './firebase'
+import firebase from '../firebase'
 import {Button, Grid, TextField} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 const useStyles = makeStyles((theme) => ({
+    root: {
+        maxWidth: 345,
+        margin: '5%',
+    },
     mb: {
         marginBottom: 20
     },
@@ -19,6 +23,7 @@ export const SpellInput = ({ spell }) => {
   const [description, setDescription] = React.useState(spell.description);
   const [image, setImage] = React.useState(spell.image);
   const [count, setCount] = React.useState(spell.count);
+  const [category, setCategory] = React.useState(spell.category);
   const classes = useStyles();
   const onUpdate = () => {
     const db = firebase.firestore();
@@ -31,6 +36,7 @@ export const SpellInput = ({ spell }) => {
             description,
             price,
             count,
+            category,
             date: new Date().toLocaleString()
         }
     )}
@@ -57,7 +63,8 @@ export const SpellInput = ({ spell }) => {
     }
 
   return (
-      <Grid item >
+      <Grid container spacing={3}>
+        <Grid item className={classes.root} >
         <div className={classes.mb}>
             <div
                 className="dish__image"
@@ -108,6 +115,15 @@ export const SpellInput = ({ spell }) => {
                 className={classes.input}
             />
             <br/>
+            <TextField
+                value={category}
+                label="Категория"
+                onChange={e => {
+                    setCategory(e.target.value);
+                }}
+                className={classes.input}
+            />
+            <br/>
             <br/>
             <br/>
 
@@ -117,6 +133,7 @@ export const SpellInput = ({ spell }) => {
         <br/>
         <br/>
         </div>
+      </Grid>
       </Grid>
   );
 };

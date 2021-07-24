@@ -11,7 +11,7 @@ import { Grid} from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 345,
-        margin: '5%',
+        marginTop: 20,
     },
     media: {
         height: 0,
@@ -32,10 +32,13 @@ const useStyles = makeStyles((theme) => ({
     },
     marginB: {
         marginBottom: 20
+    },
+    description: {
+        minHeight: 63
     }
 }));
 
-export default function CardIHERB({item}) {
+export default function CardIHERB({item, fullscreen}) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
 
@@ -62,7 +65,7 @@ export default function CardIHERB({item}) {
                 }
 
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
+                    <Typography variant="body2" color="textSecondary" component="p" className={classes.description}>
                         {item.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
@@ -70,6 +73,9 @@ export default function CardIHERB({item}) {
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
                         {item.count !== '0' ? `Количество ${item.count}`: 'нет в наличии'}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                        Категория {item.category}
                     </Typography>
                 </CardContent>
                 {/*<CardActions disableSpacing>*/}

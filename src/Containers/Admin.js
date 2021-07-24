@@ -1,5 +1,5 @@
 import React from 'react';
-import {SpellInput} from "../SpellInput";
+import {SpellInput} from "../Components/SpellInput";
 import firebase from "../firebase";
 import {Button, Container, Grid, TextField, Link} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
     },
     input: {
         width: '100%'
+    },
+    image: {
+        width: 300,
+        height: 'auto'
     }
 }));
 function Admin() {
@@ -22,6 +26,7 @@ function Admin() {
     const [description, setDescription] = React.useState('');
     const [image, setImage] = React.useState('');
     const [count, setCount] = React.useState('');
+    const [category, setCategory] = React.useState('');
     const [search, setSearch] = React.useState('');
     const classes = useStyles();
     React.useEffect(() => {
@@ -41,6 +46,7 @@ function Admin() {
                 description,
                 price,
                 count,
+                category,
                 date: new Date().toLocaleString()
             }
         );
@@ -50,6 +56,7 @@ function Admin() {
         setDescription('')
         setCount('')
         setPrice('')
+        setCategory('')
     };
     const handleChangeImage = (e) => {
         e.preventDefault();
@@ -81,7 +88,7 @@ function Admin() {
                     <TextField
                         type="text"
                         onChange={changeSearch}
-                        id="imageButton"
+                        id="imageButton2"
                         label="Поиск"
                         value={search}
                     />
@@ -91,8 +98,9 @@ function Admin() {
                     <TextField
                         type="file"
                         onChange={handleChangeImage}
-                        id="imageButton"
+                        id="imageButton3"
                     />
+                    <img src={image} className={classes.image}/>
                     <br/>
                     <div>
                         <TextField
@@ -132,15 +140,32 @@ function Admin() {
                         />
 
                         <br/>
+                        <TextField
+                            value={category}
+                            label="Категория"
+                            onChange={e => setCategory(e.target.value)}
+                            className={classes.input}
+                        />
+
+                        <br/>
                         <br/>
                         <br/>
                         <Button className={classes.mb} variant="contained" color="primary" onClick={onCreate}>Create</Button>
 
                     </div>
-                    {iherb.filter(item => search.length ? item.name.includes(search) : true).map((vitamin, index) => (
-                        <div key={index}>
-                            <SpellInput spell={vitamin}/>
-                        </div>
+                    {iherb
+                        .filter((item) => {
+                            const buff = [];
+
+                            if (search.length) {
+                                buff.push(item.name.toUpperCase().includes(search.toUpperCase()));
+                            }
+                            console.log(item.name.toUpperCase(), 'item.name.toUpperCase()')
+                            console.log(search.toUpperCase(), 'isearch')
+                            return buff.every(Boolean);
+                        })
+                        .map((vitamin, index) => (
+                            <SpellInput key={index} spell={vitamin}/>
                     ))}
                 </Grid>
             </Grid>
