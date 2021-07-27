@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -14,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import * as firebase from "firebase";
 import { useHistory } from "react-router-dom";
+
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">

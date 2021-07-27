@@ -18,32 +18,34 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 export const SpellInput = ({ spell }) => {
-  const [name, setName] = React.useState(spell.name);
-  const [price, setPrice] = React.useState(spell.price);
-  const [description, setDescription] = React.useState(spell.description);
-  const [image, setImage] = React.useState(spell.image);
-  const [count, setCount] = React.useState(spell.count);
-  const [category, setCategory] = React.useState(spell.category);
+
+  const {name, price, description, image, count, category, id} = spell;
+  const [nameSpell, setNameSpell] = React.useState(name);
+  const [priceSpell, setPriceSpell] = React.useState(price);
+  const [descriptionSpell, setDescriptionSpell] = React.useState(description);
+  const [imageSpell, setImageSpell] = React.useState(image);
+  const [countSpell, setCountSpell] = React.useState(count);
+  const [categorySpell, setCategorySpell] = React.useState(category);
   const classes = useStyles();
   const onUpdate = () => {
     const db = firebase.firestore();
 
-    db.collection('iherb').doc(spell.id).set(
+    db.collection('iherb').doc(id).set(
         {
             ...spell,
-            image,
-            name,
-            description,
-            price,
-            count,
-            category,
+            nameSpell,
+            priceSpell,
+            descriptionSpell,
+            imageSpell,
+            countSpell,
+            categorySpell,
             date: new Date().toLocaleString()
         }
     )}
 
   const onDelete = () => {
     const db = firebase.firestore()
-    db.collection('iherb').doc(spell.id).delete()
+    db.collection('iherb').doc(id).delete()
   }
 
     const handleChangeImage = (e) => {
@@ -52,13 +54,13 @@ export const SpellInput = ({ spell }) => {
             let reader = new FileReader();
             let file = e.target.files[0];
             reader.onloadend = () => {
-                setImage(reader.result);
+                setImageSpell(reader.result);
             };
             reader.readAsDataURL(file);
         } catch (e) {
             console.log(e.message);
         } finally {
-            setImage("");
+            setImageSpell("");
         }
     }
 
@@ -83,7 +85,7 @@ export const SpellInput = ({ spell }) => {
                 value={name}
                 label="Имя"
                 onChange={e => {
-                    setName(e.target.value);
+                    setNameSpell(e.target.value);
                 }}
                 className={classes.input}
             />
@@ -94,7 +96,7 @@ export const SpellInput = ({ spell }) => {
                 rows={4}
                 label="Описание"
                 onChange={e => {
-                    setDescription(e.target.value);
+                    setDescriptionSpell(e.target.value);
                 }}
                 className={classes.input}
             />
@@ -103,7 +105,7 @@ export const SpellInput = ({ spell }) => {
                 value={price}
                 label="Цена"
                 onChange={e => {
-                    setPrice(e.target.value);
+                    setPriceSpell(e.target.value);
                 }}
                 className={classes.input}
             />
@@ -112,7 +114,7 @@ export const SpellInput = ({ spell }) => {
                 value={count}
                 label="Количество"
                 onChange={e => {
-                    setCount(e.target.value);
+                    setCountSpell(e.target.value);
                 }}
                 className={classes.input}
             />
@@ -121,7 +123,7 @@ export const SpellInput = ({ spell }) => {
                 value={category}
                 label="Категория"
                 onChange={e => {
-                    setCategory(e.target.value);
+                    setCategorySpell(e.target.value);
                 }}
                 className={classes.input}
             />
