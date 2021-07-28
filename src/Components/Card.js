@@ -69,7 +69,7 @@ export default function CardIHERB({item, fullscreen}) {
                         {item.description}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        Цена {+item.price + (item.addPrice || 0)} грн
+                        Цена {+item.price + (+item.priceAdd || 0)} грн
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
                         {item.count !== '0' ? `Количество ${item.count}`: 'нет в наличии'}

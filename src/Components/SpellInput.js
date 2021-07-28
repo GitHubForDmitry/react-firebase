@@ -48,6 +48,7 @@ export const SpellInput = ({ spell }) => {
             ...spell,
             nameCurrent,
             price,
+            priceAdd,
             description,
             count,
             urlImage,
