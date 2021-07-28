@@ -1,7 +1,7 @@
 import React from 'react';
 import {SpellInput} from "../Components/SpellInput";
 import firebase from "../firebase";
-import {Button, Container, Grid, TextField, Link} from "@material-ui/core";
+import {Button, Container, Grid, TextField, Link, CircularProgress} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useHistory} from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
@@ -18,17 +18,26 @@ const useStyles = makeStyles((theme) => ({
     image: {
         width: 300,
         height: 'auto'
+    },
+    loadingImage: {
+        width: 286,
+        height: 370,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 }));
 function Admin() {
     const [iherb, setIherb] = React.useState([]);
     const [name, setName] = React.useState('');
+    const [urlImage, setUrlImage] = React.useState('');
     const [price, setPrice] = React.useState('');
+    const [priceAdd, setPriceAdd] = React.useState('');
     const [description, setDescription] = React.useState('');
-    const [image, setImage] = React.useState('');
     const [count, setCount] = React.useState('');
     const [category, setCategory] = React.useState('');
     const [search, setSearch] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     const classes = useStyles();
     React.useEffect(() => {
         const fetchData = async () => {
@@ -42,37 +51,36 @@ function Admin() {
         const db = firebase.firestore();
         db.collection("iherb").add(
             {
-                image,
                 name,
                 description,
                 price,
                 count,
                 category,
+                urlImage,
+                priceAdd,
                 date: new Date().toLocaleString()
             }
         );
 
-        setName('')
-        setImage('')
         setDescription('')
         setCount('')
         setPrice('')
         setCategory('')
+        setUrlImage('')
+        setPriceAdd('')
     };
-    const handleChangeImage = (e) => {
+    const handleChangeImage = async (e) => {
+        setLoading(true)
         e.preventDefault();
-        try {
-            let reader = new FileReader();
-            let file = e.target.files[0];
-            reader.onloadend = () => {
-                setImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        } catch (e) {
-            console.log(e.message);
-        } finally {
-            setImage("");
-        }
+        let file = e.target.files[0];
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(`images/${file.name}`);
+        await fileRef.put(file)
+        await fileRef.getDownloadURL().then((data) => {
+            setUrlImage(data);
+            setLoading(false)
+        })
+
     }
 
     const changeSearch = (e) => {
@@ -96,64 +104,80 @@ function Admin() {
                     <br/>
                     <br/>
                     <br/>
-                    <TextField
-                        type="file"
-                        onChange={handleChangeImage}
-                        id="imageButton3"
-                    />
-                    <img src={image} className={classes.image}/>
-                    <br/>
+                    {loading ?
+                        <div className={classes.loadingImage}>
+                            <CircularProgress />
+                        </div>
+                     :
                     <div>
                         <TextField
-                            value={name}
-                            label="Имя"
-                            onChange={e => {
-                                setName(e.target.value);
-                            }}
-                            className={classes.input}
+                            type="file"
+                            onChange={handleChangeImage}
+                            id="imageButton3"
                         />
+                        <img src={urlImage} className={classes.image}/>
                         <br/>
-                        <TextField
-                            value={description}
-                            label="Описание"
-                            onChange={e => {
-                                setDescription(e.target.value);
-                            }}
-                            className={classes.input}
-                        />
-                        <br/>
-                        <TextField
-                            value={price}
-                            label="Цена"
-                            onChange={e => {
-                                setPrice(e.target.value);
-                            }}
-                            className={classes.input}
-                        />
-                        <br/>
-                        <TextField
-                            value={count}
-                            label="Количество"
-                            onChange={e => {
-                                setCount(e.target.value);
-                            }}
-                            className={classes.input}
-                        />
+                        <div>
+                            <TextField
+                                value={name}
+                                label="Имя"
+                                onChange={e => {
+                                    setName(e.target.value);
+                                }}
+                                className={classes.input}
+                            />
+                            <br/>
+                            <TextField
+                                value={description}
+                                label="Описание"
+                                onChange={e => {
+                                    setDescription(e.target.value);
+                                }}
+                                className={classes.input}
+                            />
+                            <br/>
+                            <TextField
+                                value={price}
+                                label="Цена"
+                                onChange={e => {
+                                    setPrice(e.target.value);
+                                }}
+                                className={classes.input}
+                            />
+                            <br/>
+                            <TextField
+                                value={priceAdd}
+                                label="Доп цена"
+                                onChange={e => {
+                                    setPriceAdd(e.target.value);
+                                }}
+                                className={classes.input}
+                            />
+                            <br/>
+                            <TextField
+                                value={count}
+                                label="Количество"
+                                onChange={e => {
+                                    setCount(e.target.value);
+                                }}
+                                className={classes.input}
+                            />
 
-                        <br/>
-                        <TextField
-                            value={category}
-                            label="Категория"
-                            onChange={e => setCategory(e.target.value)}
-                            className={classes.input}
-                        />
+                            <br/>
+                            <TextField
+                                value={category}
+                                label="Категория"
+                                onChange={e => setCategory(e.target.value)}
+                                className={classes.input}
+                            />
 
-                        <br/>
-                        <br/>
-                        <br/>
-                        <Button className={classes.mb} variant="contained" color="primary" onClick={onCreate}>Create</Button>
-
+                            <br/>
+                            <br/>
+                            <br/>
+                            <Button className={classes.mb} variant="contained" color="primary"
+                                    onClick={onCreate}>Create</Button>
                     </div>
+                    </div>}
                     {iherb
                         .filter((item) => {
                             const buff = [];
@@ -164,7 +188,7 @@ function Admin() {
                             return buff.every(Boolean);
                         })
                         .map((vitamin, index) => (
-                            <SpellInput key={index} spell={vitamin}/>
+                            <SpellInput key={vitamin.id} spell={vitamin}/>
                     ))}
                 </Grid>
             </Grid>
